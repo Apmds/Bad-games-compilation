@@ -95,13 +95,17 @@ function love.draw()
     love.graphics.setColor(0, 1, 0)
     love.graphics.circle("fill", ball.x+ball.radius, ball.y+ball.radius, ball.radius)
     
+    love.graphics.setColor(0, 0, 1)
+    love.graphics.printf("Lives: " .. player.lives, SCREEN_WIDTH/4, 30, SCREEN_WIDTH/2, "center")
+
     -- "Menus"
     if game_paused then
-        love.graphics.printf("PAUSED", SCREEN_WIDTH/4, 20, SCREEN_WIDTH/2, "center")
+        love.graphics.printf("PAUSED", SCREEN_WIDTH/4, SCREEN_HEIGHT/2 + 50, SCREEN_WIDTH/2, "center")
     end
     if game_ended then
         love.graphics.printf("GG", SCREEN_WIDTH/4, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, "center")
     end
+    love.graphics.setColor(1, 1, 1)
     if debug_menu then
         love.graphics.print("Player: X: " .. player.x .. "; Lives: " .. player.lives, 0, 0)
         love.graphics.print("Ball: X: " .. math.floor(ball.x) .. "; Y: " .. math.floor(ball.y) .. "; Angle: " .. ball.angle, 0, 30)
