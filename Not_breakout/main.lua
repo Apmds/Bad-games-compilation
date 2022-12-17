@@ -129,6 +129,7 @@ function is_colliding(obj1, obj2)
     return obj1.x+obj1.width > obj2.x and obj1.y+obj1.height > obj2.y and obj2.x+obj2.width > obj1.x and obj2.y+obj2.height > obj1.y
 end
 
+-- Unused: Returns the collision point of two objects, if they are colliding
 function get_collision_point(obj1, obj2)
     if not is_colliding(obj1, obj2) then
         return nil
@@ -150,7 +151,7 @@ function reset_game()
     ball = {
         x = 0,
         y = 350,
-        angle = -25,
+        angle = -20,
         speed = 10,
         speed_x = 10,
         speed_y = 6,
@@ -189,7 +190,7 @@ function new_life()
     ball = {
         x = 0,
         y = 350,
-        angle = -25,
+        angle = -20,
         speed = 10,
         speed_x = 10,
         speed_y = 6,
