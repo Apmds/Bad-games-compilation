@@ -13,10 +13,7 @@ function love.load()
     player.last_y = 0
 
     -- Level_data
-    current_level = 0
-    level = LEVELS[current_level]
-    player.x = level.player[1]
-    player.y = level.player[2]
+    load_level(0)
 end
 
 function love.update(dt)
@@ -25,8 +22,8 @@ function love.update(dt)
 
     -- Check for level completion(need to put inside movement function)
     local buttons_pressed = 0
-    for i, button in pairs(level.buttons) do
-        for j, box in pairs(level.boxes) do
+    for i, button in pairs(buttons) do
+        for j, box in pairs(boxes) do
             button[3] = false
             if button[1] == box[1] and button[2] == box[2] then
                 button[3] = true
@@ -37,17 +34,17 @@ function love.update(dt)
             buttons_pressed = buttons_pressed + 1
         end
     end
-    level_ended = buttons_pressed == #level.buttons
+    level_ended = buttons_pressed == #buttons
 end
 
 function love.draw()
     -- Box/button drawing
     love.graphics.setColor(0, 1, 0)
-    for i, button in pairs(level.buttons) do
+    for i, button in pairs(buttons) do
         love.graphics.rectangle("fill", button[1]*50, button[2]*50, 50, 50)
     end
 
-    for i, box in pairs(level.boxes) do
+    for i, box in pairs(boxes) do
         if box[4] == nil then
             love.graphics.setColor(23/255, 26/255, 46/255)
         else
@@ -71,10 +68,10 @@ function love.draw()
         love.graphics.print("Player_last: " .. player.last_x .. ";" .. player.last_y, 0, 30)
         love.graphics.print("FPS: " .. fps, 0, 60)
         love.graphics.print("Paused: " .. tostring(game_paused), 0, 90)
-        for i, button in pairs(level.buttons) do
+        for i, button in pairs(buttons) do
             love.graphics.print("Button " .. i .. ": " .. tostring(button[3]), 0, 30*i + 90)
         end
-        for i, box in pairs(level.boxes) do
+        for i, box in pairs(boxes) do
             love.graphics.print("Box " .. i .. ": " .. tostring(box[3]) .. tostring(box[4]) .. tostring(box[5]) .. tostring(box[6]), 170, 30*i-30)
         end
     end
@@ -122,11 +119,14 @@ function love.keypressed(key)
     if key == "p" then
         game_paused = not game_paused
     end
+    
+    -- Try to load the level
+    load_level(tonumber(key))
 end
 
 -- Get box information at some coordinates
 function get_box(x, y)
-    for i, box in pairs(level.boxes) do
+    for i, box in pairs(boxes) do
         if box[1] == x and box[2] == y then
             return box
         end
@@ -136,7 +136,7 @@ end
 
 -- Check if box exists at some coordinates
 function check_box(x, y)
-    for i, box in pairs(level.boxes) do
+    for i, box in pairs(boxes) do
         if box[1] == x and box[2] == y then
             return true
         end
@@ -189,7 +189,7 @@ end
 
 -- Called to update the status of every box object
 function update_boxes()
-    for i, box in pairs(level.boxes) do
+    for i, box in pairs(boxes) do
         -- Check if box is in same position as player and move it accordingly
         if box[1] == player.x and box[2] == player.y then
             if player.last_x == player.x - 1 and get_box(box[1]+1, box[2])[6] then -- Move right 
@@ -234,4 +234,36 @@ function update_boxes()
             end
         end
     end
+end
+
+-- Loads the desired level
+function load_level(level_num)
+    -- Dont load the level if the number doesn't match to an existing level
+    if LEVELS[level_num] == nil then
+        return
+    end
+    current_level = level_num
+    lvs = deepcopy(LEVELS) -- Makes a copy of the levels table, so the original doesn't get changed
+
+    level = lvs[current_level]
+    buttons = level.buttons
+    boxes = level.boxes
+    player.x = level.player[1]
+    player.y = level.player[2]
+end
+
+-- Copies a table(from http://lua-users.org/wiki/CopyTable)
+function deepcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
 end

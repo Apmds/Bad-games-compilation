@@ -1,4 +1,4 @@
-return {
+levels = {
     [0] = {
         buttons = {
             {6, 5, false},
@@ -18,15 +18,19 @@ return {
         boxes = {
             {4, 6, true, true, true, true}
         },
-        player = {2, 6}
+        player = {1, 6}
     },
     [2] = {
         buttons = {
-
+            {6, 6, false},
+            {9, 6, false},
         },
         boxes = {
-
+            {3, 6, true, true, true, true},
+            {4, 6, true, true, true, true},
         },
-        player = {0, 0}
+        player = {1, 6}
     },
 }
+
+return levels
